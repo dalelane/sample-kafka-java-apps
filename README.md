@@ -108,7 +108,7 @@ It will keep doing this until the app is killed.
 ### Sending
 - [`RandomBytesProducer`](./src/main/java/com/ibm/eventautomation/demos/producers/RandomBytesProducer.java)
 
-This sends 10,000 messages, each containing a randomly-generated 128-byte array, to a Kafka topic.
+This sends [10,000](./src/main/java/com/ibm/eventautomation/demos/producers/RandomBytesProducer.java#L48) messages, each containing a randomly-generated [128](./src/main/java/com/ibm/eventautomation/demos/utils/Utils.java#L67)-byte array, to a Kafka topic.
 
 It exits once all messages have been successfully sent.
 
