@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.Random;
 import org.apache.kafka.common.config.ConfigException;
 
 public class Utils {
@@ -58,5 +59,13 @@ public class Utils {
 
     public static String readFileAsString(File file) throws IOException {
         return new String(Files.readAllBytes(file.toPath()));
+    }
+
+
+    private static final Random RNG = new Random();
+    public static byte[] randomData() {
+        byte[] array = new byte[128];
+        RNG.nextBytes(array);
+        return array;
     }
 }

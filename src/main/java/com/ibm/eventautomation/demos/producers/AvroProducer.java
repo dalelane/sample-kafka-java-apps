@@ -118,6 +118,7 @@ public class AvroProducer {
                         createThirdMessage(avro))
             );
 
+            // wait for messages to finish sending
             producer.flush();
         }
     }

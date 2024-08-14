@@ -18,32 +18,34 @@ package com.ibm.eventautomation.demos.producers;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.ibm.eventautomation.demos.utils.Utils;
 
 /**
- * Reads the contents of files, and produces the contents of each file
- *  to a Kafka topic as a string.
+ * Produces 10,000 randomly generated 128-byte arrays, each as
+ *  a separate message.
  *
- * It continues until it has done this for all of the txt files in the
- *  specified folder.
+ *  Callbacks are used to count the number of messages that
+ *  fail to send, and the app prints a message on completion
+ *  to confirm how many messages were successfully sent.
  */
-public class TextProducer {
-
-    /** Location of the folder containing the text files to produce to Kafka. */
-    private static final Path TEST_DATA_FOLDER = Paths.get("./testdata/text");
+public class RandomBytesProducer {
 
     /** Config to use for the connection to the Kafka cluster. */
     private static final Path CLIENT_CONFIG = Paths.get("./testdata/producer.properties");
+
+    /** Number of messages containing random data to try to send. */
+    private static final int NUM_MESSAGES_TO_ATTEMPT = 10_000;
 
 
     public static void run() throws IOException {
@@ -51,23 +53,40 @@ public class TextProducer {
         // read Kafka client configuration from the properties file
         Properties kafkaConfig = Utils.readProperties(CLIENT_CONFIG);
         kafkaConfig.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getCanonicalName());
-        kafkaConfig.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getCanonicalName());
+        kafkaConfig.put(VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName());
 
         // prepare the producer to send messages
-        try (KafkaProducer<String, String> producer = new KafkaProducer<>(kafkaConfig)) {
+        try (KafkaProducer<String, byte[]> producer = new KafkaProducer<>(kafkaConfig)) {
 
-            // for each file in the folder...
-            for (File file : Utils.getFiles(TEST_DATA_FOLDER, ".txt")) {
-                // send the contents to Kafka as a string
+            final AtomicLong failedToSend = new AtomicLong(0);
+            long attemptedToSend = 0;
+
+            long startMilliseconds = System.currentTimeMillis();
+
+            while (attemptedToSend < NUM_MESSAGES_TO_ATTEMPT) {
+                // send message containing random data
                 producer.send(
-                    new ProducerRecord<String, String>(
-                            kafkaConfig.getProperty("topic"),
-                            Utils.readFileAsString(file))
+                    new ProducerRecord<String,byte[]>(
+                        kafkaConfig.getProperty("topic"),
+                        Utils.randomData()),
+                    (meta, exc) -> {
+                        if (exc != null) {
+                            failedToSend.incrementAndGet();
+                        }
+                    }
                 );
+
+                attemptedToSend += 1;
             }
 
             // wait for messages to finish sending
             producer.flush();
+
+            // compute time taken to send
+            long nowMilliseconds = System.currentTimeMillis();
+            System.out.format("%d messages successfully produced in %d seconds. %n",
+                              attemptedToSend - failedToSend.get(),
+                              Math.round((nowMilliseconds - startMilliseconds) / 1000));
         }
     }
 

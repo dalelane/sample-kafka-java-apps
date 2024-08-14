@@ -2,10 +2,11 @@
 
 Sample Java applications for sending and receiving messages to a Kafka topic. These require Java and Maven to build and run, and a Kafka cluster to connect to.
 
-Three variations are included:
+Four variations are included:
 - [Text](#text)
 - [JSON](#json)
 - [Avro](#avro)
+- [Bytes](#bytes)
 
 ## Text
 
@@ -99,3 +100,22 @@ It will keep doing this until the app is killed.
 - **To run**:
     - [`./scripts/produce-avro.sh`](./scripts/produce-avro.sh)
     - [`./scripts/consume-avro.sh`](./scripts/consume-avro.sh)
+
+
+
+## Bytes
+
+### Sending
+- [`RandomBytesProducer`](./src/main/java/com/ibm/eventautomation/demos/producers/RandomBytesProducer.java)
+
+This sends 10,000 messages, each containing a randomly-generated 128-byte array, to a Kafka topic.
+
+It exits once all messages have been successfully sent.
+
+**To modify the Kafka topic it sends to**, modify the [`producer.properties`](./testdata/producer.properties) properties file.
+
+### Scripts
+
+- **To compile**: [`./scripts/compile.sh`](./scripts/compile.sh)
+- **To run**:
+    - [`./scripts/produce-random.sh`](./scripts/produce-random.sh)

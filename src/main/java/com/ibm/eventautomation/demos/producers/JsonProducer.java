@@ -89,6 +89,7 @@ public class JsonProducer {
                 }
             }
 
+            // wait for messages to finish sending
             producer.flush();
         }
     }
