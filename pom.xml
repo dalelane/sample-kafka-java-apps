@@ -6,9 +6,9 @@
     <artifactId>sample-kafka-apps</artifactId>
 
     <name>Sample Kafka applications</name>
-    <description>Source code for Java applications to produce and consume to Kafka topics using JSON and Avro data</description>
+    <description>Source code for Java applications to produce and consume to Kafka topics using different data formats</description>
 
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 
     <packaging>jar</packaging>
 

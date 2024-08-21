@@ -114,8 +114,18 @@ It exits once all messages have been successfully sent.
 
 **To modify the Kafka topic it sends to**, modify the [`producer.properties`](./testdata/producer.properties) properties file.
 
+### Receiving
+- [`BytesConsumer`](./src/main/java/com/ibm/eventautomation/demos/consumers/BytesConsumer.java)
+
+This receives messages from a Kafka topic and prints each to stdout in a hex format.
+
+It will keep doing this until the app is killed.
+
+**To modify the Kafka topic it receives from**, modify the [`consumer.properties`](./testdata/consumer.properties) properties file.
+
 ### Scripts
 
 - **To compile**: [`./scripts/compile.sh`](./scripts/compile.sh)
 - **To run**:
     - [`./scripts/produce-random.sh`](./scripts/produce-random.sh)
+    - [`./scripts/consume-bytes.sh`](./scripts/consume-bytes.sh)
