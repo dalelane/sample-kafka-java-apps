@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -82,11 +83,17 @@ public class JsonProducer {
                         new ProducerRecord<String, String>(
                                 kafkaConfig.getProperty("topic"),
                                 gson.toJson(jsonMessage))
-                    );
+                    ).get();
                 }
                 catch (JsonParseException jpe) {
                     System.err.println("Skipping file as invalid JSON " + file.getAbsolutePath());
                 }
+                catch (ExecutionException exc) {
+                    System.err.println("Failed to send message in file " +
+                                       file.getName() + " : " +
+                                       exc.getMessage());
+                }
+                catch (InterruptedException thr) {}
             }
 
             // wait for messages to finish sending
