@@ -24,8 +24,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.ibm.eventautomation.demos.utils.Utils;
@@ -60,10 +62,20 @@ public class TextProducer {
             for (File file : Utils.getFiles(TEST_DATA_FOLDER, ".txt")) {
                 // send the contents to Kafka as a string
                 producer.send(
+                    // prepare the message to send
                     new ProducerRecord<String, String>(
                             kafkaConfig.getProperty("topic"),
-                            Utils.readFileAsString(file))
-                );
+                            Utils.readFileAsString(file)),
+                    // report any errors
+                    new Callback() {
+                        @Override
+                        public void onCompletion(RecordMetadata m, Exception exc) {
+                            if (exc != null) {
+                                System.err.println("Failed to send message");
+                                exc.printStackTrace();
+                            }
+                        }
+                    });
             }
 
             // wait for messages to finish sending

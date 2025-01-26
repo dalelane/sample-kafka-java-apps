@@ -24,8 +24,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.google.gson.Gson;
@@ -79,10 +81,20 @@ public class JsonProducer {
 
                     // send the contents to Kafka as a string
                     producer.send(
+                        // prepare the message to send
                         new ProducerRecord<String, String>(
-                                kafkaConfig.getProperty("topic"),
-                                gson.toJson(jsonMessage))
-                    );
+                            kafkaConfig.getProperty("topic"),
+                            gson.toJson(jsonMessage)),
+                        // report any errors
+                        new Callback() {
+                            @Override
+                            public void onCompletion(RecordMetadata m, Exception exc) {
+                                if (exc != null) {
+                                    System.err.println("Failed to send message");
+                                    exc.printStackTrace();
+                                }
+                            }
+                        });
                 }
                 catch (JsonParseException jpe) {
                     System.err.println("Skipping file as invalid JSON " + file.getAbsolutePath());
