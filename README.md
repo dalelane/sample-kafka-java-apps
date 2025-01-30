@@ -1,6 +1,6 @@
 # Simple Kafka client apps
 
-Sample Java applications for sending and receiving messages to a Kafka topic. These require Java and Maven to build and run, and a Kafka cluster to connect to.
+Sample Java applications for sending, receiving, and processing messages on Kafka topics. These require Java and Maven to build and run, and a Kafka cluster to connect to.
 
 Four variations are included:
 - [Text](#text)
@@ -30,12 +30,24 @@ It will keep doing this until the app is killed.
 
 **To modify the Kafka topic it receives from**, modify the [`consumer.properties`](./testdata/consumer.properties) properties file.
 
+### Processing
+- [`TextProcessor`](./src/main/java/com/ibm/eventautomation/demos/streamprocessors/TextProcessor.java)
+
+This consumes text messages from an input Kafka topic, and produces messages with an upper-cased version of the text to an output topic.
+
+It will keep doing this until the app is killed.
+
+**To modify the Kafka topics it uses**, modify the [`streams.properties`](/testdata/streams.properties) properties file.
+
+**To modify the processing it performs**, modify [the Java source code](./src/main/java/com/ibm/eventautomation/demos/streamprocessors/TextProcessor.java#L49).
+
 ### Scripts
 
 - **To compile**: [`./scripts/compile.sh`](./scripts/compile.sh)
 - **To run**:
     - [`./scripts/produce-text.sh`](./scripts/produce-text.sh)
     - [`./scripts/consume-text.sh`](./scripts/consume-text.sh)
+    - [`./scripts/process-text.sh`](./scripts/process-text.sh)
 
 
 
@@ -44,7 +56,7 @@ It will keep doing this until the app is killed.
 ### Sending
 - [`JsonProducer`](./src/main/java/com/ibm/eventautomation/demos/producers/JsonProducer.java)
 
-This sends the contents of each json file in the [`testdata/json`](./testdata/json//) folder to a Kafka topic - each file contents a separate Kafka message.
+This sends the contents of each json file in the [`testdata/json`](./testdata/json/) folder to a Kafka topic - each file contents a separate Kafka message.
 
 It exits once it has sent all of the files in the test data folder.
 
@@ -61,12 +73,24 @@ It will keep doing this until the app is killed.
 
 **To modify the Kafka topic it receives from**, modify the [`consumer.properties`](./testdata/consumer.properties) properties file.
 
+### Processing
+- [`JsonProcessor`](./src/main/java/com/ibm/eventautomation/demos/streamprocessors/JsonProcessor.java)
+
+This consumes messages from an input Kafka topic, and produces messages that match a filter to an output Kafka topic.
+
+It will keep doing this until the app is killed.
+
+**To modify the Kafka topics it uses**, modify the [`streams.properties`](/testdata/streams.properties) properties file.
+
+**To modify the data it can process**, modify [the Java source code](./src/main/java/com/ibm/eventautomation/demos/streamprocessors/JsonProcessor.java#L53-L56).
+
 ### Scripts
 
 - **To compile**: [`./scripts/compile.sh`](./scripts/compile.sh)
 - **To run**:
     - [`./scripts/produce-json.sh`](./scripts/produce-json.sh)
     - [`./scripts/consume-json.sh`](./scripts/consume-json.sh)
+    - [`./scripts/process-json.sh`](./scripts/process-json.sh)
 
 ## Avro
 

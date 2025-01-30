@@ -40,6 +40,13 @@
             <version>3.8.0</version>
         </dependency>
 
+        <!-- Kafka Streams support -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+
         <!-- Data types support -->
         <!-- avro -->
         <dependency>
