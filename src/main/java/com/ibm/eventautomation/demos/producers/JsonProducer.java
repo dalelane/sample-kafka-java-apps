@@ -90,7 +90,7 @@ public class JsonProducer {
                             @Override
                             public void onCompletion(RecordMetadata m, Exception exc) {
                                 if (exc != null) {
-                                    System.err.println("Failed to send message");
+                                    System.err.println("Failed to send message " + file.getName());
                                     exc.printStackTrace();
                                 }
                             }
