@@ -1,0 +1,44 @@
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaTopic
+metadata:
+  name: otel-input
+  namespace: event-automation
+  labels:
+    eventstreams.ibm.com/cluster: my-kafka-cluster
+spec:
+  config:
+    min.insync.replicas: '1'
+    retention.bytes: '5242880'
+  partitions: 1
+  replicas: 1
+  topicName: OTEL.INPUT
+---
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaTopic
+metadata:
+  name: otel-processing
+  namespace: event-automation
+  labels:
+    eventstreams.ibm.com/cluster: my-kafka-cluster
+spec:
+  config:
+    min.insync.replicas: '1'
+    retention.bytes: '5242880'
+  partitions: 1
+  replicas: 1
+  topicName: OTEL.PROCESSING
+---
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaTopic
+metadata:
+  name: otel-output
+  namespace: event-automation
+  labels:
+    eventstreams.ibm.com/cluster: my-kafka-cluster
+spec:
+  config:
+    min.insync.replicas: '1'
+    retention.bytes: '5242880'
+  partitions: 1
+  replicas: 1
+  topicName: OTEL.OUTPUT

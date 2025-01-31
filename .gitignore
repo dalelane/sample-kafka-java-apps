@@ -1,1 +1,5 @@
 target
+opentelemetry-javaagent.jar
+.vscode
+deploy/opentelemetry-javaagent.jar
+deploy/flink/target

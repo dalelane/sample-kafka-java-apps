@@ -1,0 +1,52 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: monitoring
+---
+apiVersion: tempo.grafana.com/v1alpha1
+kind: TempoMonolithic
+metadata:
+  name: otel
+  namespace: monitoring
+spec:
+  jaegerui:
+    enabled: true
+    resources:
+      limits:
+        cpu: '2'
+        memory: 2Gi
+    route:
+      enabled: true
+  resources:
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  storage:
+    traces:
+      backend: memory
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: tempo-otel-grpc
+  namespace: monitoring
+spec:
+  path: /
+  to:
+    kind: Service
+    name: tempo-otel
+  port:
+    targetPort: otlp-grpc
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: tempo-otel-http
+  namespace: monitoring
+spec:
+  path: /
+  to:
+    kind: Service
+    name: tempo-otel
+  port:
+    targetPort: otlp-http
